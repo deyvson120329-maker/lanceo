@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lanceo — Cada lance merece ser lembrado</title>
+<style>
+:root {
+  --bg:#08080e;
+  --panel:#12111d;
+  --purple:#8b2cff;
+  --orange:#ff7a18;
+  --green:#16df79;
+  --text:#f7f5ff;
+  --muted:#aaa5c2;
+  --border:#302344;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:radial-gradient(ellipse at top left,#211039 0,transparent 35%),var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+button,input,select { font:inherit; }
+button {
+  cursor:pointer;
+  border:0;
+  border-radius:12px;
+  padding:13px 16px;
+  font-weight:700;
+  transition:transform .15s,filter .15s;
+}
+button:hover { filter:brightness(1.12); transform:translateY(-1px); }
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  padding:22px 5%;
+  border-bottom:1px solid #282033;
+}
+.brand { display:flex;align-items:center;gap:12px; }
+.logo {
+  width:45px;height:45px;border-radius:14px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--orange),var(--purple));
+  font-size:25px;font-weight:900;
+}
+.brand h1 { margin:0;font-size:29px;letter-spacing:-1px; }
+.brand h1 span { color:var(--purple); }
+.brand small { color:var(--muted);letter-spacing:2px;font-size:10px; }
+.header-tag { color:var(--muted);font-size:13px; }
+main { max-width:1200px;margin:auto;padding:26px 20px 45px; }
+.intro { margin-bottom:24px; }
+.eyebrow { color:var(--green);font-size:11px;letter-spacing:2px;font-weight:bold; }
+h2 { font-size:clamp(25px,4vw,38px);margin:9px 0; }
+.intro p,.muted { color:var(--muted);line-height:1.6; }
+.layout { display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.8fr);gap:20px; }
+.panel {
+  background:linear-gradient(145deg,#171322,#0e0d16);
+  border:1px solid var(--border);
+  border-radius:20px;padding:18px;
+  box-shadow:0 12px 35px #0004;
+  min-width:0;
+}
+.panel-title { margin:0 0 15px;font-size:18px; }
+.camera {
+  position:relative;min-height:280px;aspect-ratio:16/9;
+  border-radius:15px;overflow:hidden;
+  background:radial-gradient(ellipse at center,#173921 0,#0d2117 50%,#080c0a 100%);
+  border:1px solid #3c3151;display:grid;place-items:center;
+}
+.field-lines {
+  position:absolute;inset:7%;border:2px solid #ffffff32;border-radius:4px;
+}
+.field-lines:before {
+  content:"";position:absolute;left:50%;top:0;bottom:0;border-left:2px solid #ffffff32;
+}
+.field-lines:after {
+  content:"";position:absolute;width:24%;aspect-ratio:1;border:2px solid #ffffff32;border-radius:50%;left:38%;top:32%;
+}
+.camera-content { position:relative;text-align:center;padding:20px;z-index:1; }
+.camera-icon { font-size:42px; }
+.camera-content p { color:#d0e3d4;line-height:1.5; }
+#video { position:absolute;width:100%;height:100%;object-fit:cover;inset:0;z-index:2;background:#000; }
+.camera-status {
+  position:absolute;top:12px;left:12px;z-index:3;
+  background:#08080edb;padding:8px 10px;border-radius:9px;font-size:12px;
+}
+.dot { display:inline-block;width:8px;height:8px;background:var(--orange);border-radius:50%;margin-right:7px; }
+.controls { display:flex;flex-wrap:wrap;gap:10px;margin-top:15px; }
+.btn-purple { background:var(--purple);color:white; }
+.btn-green { background:var(--green);color:#06180e; }
+.btn-orange { background:var(--orange);color:#211000; }
+.btn-dark { background:#242033;color:white;border:1px solid #47375f; }
+.btn-danger { background:#ed394e;color:white; }
+.controls button { flex:1;min-width:120px; }
+.notice { margin-top:12px;font-size:12px;color:var(--muted);line-height:1.5; }
+.actions { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.action {
+  min-height:88px;background:#20152e;border:1px solid #59318a;
+  color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+}
+.action span { font-size:24px; }
+.action.orange { background:#2b1b10;border-color:#8d4b1b; }
+.action.green { background:#10281d;border-color:#1b8750; }
+.action.purple { background:#211137;border-color:#6534a2; }
+.action.red { background:#30151e;border-color:#843044; }
+.section { margin-top:20px; }
+.event-list { display:flex;flex-direction:column;gap:9px; }
+.event {
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:12px;background:#0d0c14;border:1px solid #292136;border-radius:12px;
+}
+.event strong { display:block;font-size:13px; }
+.event small { display:block;color:var(--muted);margin-top:5px; }
+.event button { padding:7px 10px;background:#2a1a3d;color:white; }
+.empty { color:var(--muted);text-align:center;padding:18px 5px;font-size:13px; }
+.game-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+label { display:block;font-size:12px;color:var(--muted);margin-bottom:6px; }
+input,select {
+  width:100%;padding:12px;border:1px solid #3b2a50;border-radius:10px;
+  background:#0b0a12;color:white;outline:none;
+}
+footer { text-align:center;padding:22px;color:#79728f;font-size:12px; }
+@media(max-width:760px) {
+  header { padding:17px 5%; }
+  .brand h1 { font-size:25px; }
+  .header-tag { display:none; }
+  main { padding:22px 13px 35px; }
+  .layout { grid-template-columns:1fr; }
+  .panel { padding:14px; }
+  .camera { min-height:240px; }
+  .controls button { min-width:100px;padding:12px 9px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">▶</div>
+    <div><h1>Lance<span>o</span></h1><small>CADA LANCE MERECE SER LEMBRADO</small></div>
+  </div>
+  <div class="header-tag">REGISTRE · REVIVA · COMPARTILHE</div>
+</header>
+
+<main>
+  <section class="intro">
+    <div class="eyebrow">SUA HISTÓRIA ACONTECE EM CAMPO</div>
+    <h2>Todo grande lance merece replay.</h2>
+    <p>Prepare a câmera, registre os melhores momentos e encontre seus lances em um só lugar.</p>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <h3 class="panel-title">📹 Central de gravação</h3>
+      <div class="camera" id="cameraBox">
+        <div class="field-lines"></div>
+        <div class="camera-status"><span class="dot" id="statusDot"></span><span id="statusText">Câmera desligada</span></div>
+        <div class="camera-content" id="cameraMessage">
+          <div class="camera-icon">⚽</div>
+          <strong>Sua próxima jogada começa aqui</strong>
+          <p>Clique em “Abrir câmera” e permita o acesso quando o navegador perguntar.</p>
+        </div>
+        <video id="video" autoplay playsinline muted hidden></video>
+      </div>
+      <div class="controls">
+        <button class="btn-purple" id="openCamera">Abrir câmera</button>
+        <button class="btn-green" id="startRecord" disabled>● Gravar</button>
+        <button class="btn-danger" id="stopRecord" disabled>■ Parar</button>
+      </div>
+      <div class="controls">
+        <button class="btn-dark" id="takePhoto" disabled>📸 Tirar foto</button>
+        <button class="btn-orange" id="downloadVideo" disabled>⬇ Salvar vídeo</button>
+      </div>
+      <p class="notice" id="cameraNote">A câmera precisa de uma conexão segura (HTTPS ou localhost). No celular, use o endereço seguro que estiver funcionando.</p>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h3 class="panel-title">⚡ Marcar um lance</h3>
+        <div class="actions">
+          <button class="action green" data-event="Gol"><span>⚽</span>Gol</button>
+          <button class="action orange" data-event="Assistência"><span>🟠</span>Assistência</button>
+          <button class="action purple" data-event="Defesa"><span>🧤</span>Defesa</button>
+          <button class="action red" data-event="Falta"><span>🚩</span>Falta</button>
+          <button class="action purple" data-event="Grande jogada"><span>✨</span>Grande jogada</button>
+          <button class="action green" data-event="Outro lance"><span>➕</span>Outro lance</button>
+        </div>
+        <p class="notice">Cada marcação registra o horário do lance durante a sessão.</p>
+      </section>
+
+      <section class="panel section">
+        <h3 class="panel-title">🏟️ Jogo atual</h3>
+        <div class="game-grid">
+          <div><label>Meu time</label><input id="myTeam" placeholder="Nome do seu time"></div>
+          <div><label>Adversário</label><input id="opponent" placeholder="Outro time"></div>
+          <div><label>Esporte</label>
+            <select id="sport"><option>Futebol</option><option>Futsal</option><option>Basquete</option><option>Vôlei</option><option>Outro</option></select>
+          </div>
+          <div><label>Categoria</label><input id="category" placeholder="Ex.: Sub-9"></div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="panel section">
+    <h3 class="panel-title">🎬 Lances desta sessão</h3>
+    <div class="controls" style="margin:0 0 12px">
+      <button class="btn-dark" id="exportEvents">⬇ Exportar lista (CSV)</button>
+      <button class="btn-dark" id="clearEvents">Limpar lista</button>
+    </div>
+    <div class="event-list" id="eventList">
+      <div class="empty">Seus lances marcados vão aparecer aqui.</div>
+    </div>
+  </section>
+</main>
+<footer>LANCEO · Protótipo inicial · Seus grandes momentos começam com um lance.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const video = $("video");
+let stream = null;
+let recorder = null;
+let chunks = [];
+let lastVideoUrl = null;
+let recordingStarted = 0;
+let recordingTimer = null;
+let events = [];
+
+function timeStamp(seconds) {
+  const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const s = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+function elapsed() {
+  return recordingStarted ? timeStamp((Date.now() - recordingStarted) / 1000) : "00:00";
+}
+function setStatus(text, recording = false) {
+  $("statusText").textContent = text;
+  $("statusDot").style.background = recording ? "#ff394e" : "#ff7a18";
+}
+async function openCamera() {
+  try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error("O navegador não liberou a câmera. Abra o site em HTTPS ou localhost.");
+    }
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: true
+    });
+    video.srcObject = stream;
+    video.hidden = false;
+    $("cameraMessage").hidden = true;
+    $("startRecord").disabled = false;
+    $("takePhoto").disabled = false;
+    $("openCamera").textContent = "Câmera aberta";
+    setStatus("Câmera pronta");
+    $("cameraNote").textContent = "Câmera aberta. Quando começar a gravação, mantenha esta página aberta.";
+  } catch (error) {
+    $("cameraNote").textContent = error.message || "Não foi possível abrir a câmera. Confira a permissão do navegador e a conexão segura.";
+    setStatus("Não foi possível abrir");
+  }
+}
+$("openCamera").addEventListener("click", openCamera);
+
+$("startRecord").addEventListener("click", () => {
+  if (!stream) return;
+  const mime = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
+    .find(type => window.MediaRecorder && MediaRecorder.isTypeSupported(type));
+  if (!window.MediaRecorder) {
+    $("cameraNote").textContent = "Este navegador não oferece suporte à gravação direta. Tente uma versão recente do Chrome.";
+    return;
+  }
+  try {
+    chunks = [];
+    recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
+    recorder.ondataavailable = event => { if (event.data.size > 0) chunks.push(event.data); };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: recorder.mimeType || "video/webm" });
+      if (lastVideoUrl) URL.revokeObjectURL(lastVideoUrl);
+      lastVideoUrl = URL.createObjectURL(blob);
+      $("downloadVideo").disabled = false;
+      $("cameraNote").textContent = "Gravação pronta. Clique em “Salvar vídeo” para baixar o arquivo.";
+    };
+    recorder.start(1000);
+    recordingStarted = Date.now();
+    setStatus("Gravando " + elapsed(), true);
+    $("startRecord").disabled = true;
+    $("stopRecord").disabled = false;
+    $("openCamera").disabled = true;
+    recordingTimer = setInterval(() => setStatus("Gravando " + elapsed(), true), 1000);
+    $("cameraNote").textContent = "Gravação em andamento. Não feche nem atualize esta página.";
+  } catch (error) {
+    $("cameraNote").textContent = "Não foi possível iniciar a gravação: " + error.message;
+  }
+});
+
+$("stopRecord").addEventListener("click", () => {
+  if (recorder && recorder.state !== "inactive") recorder.stop();
+  clearInterval(recordingTimer);
+  $("stopRecord").disabled = true;
+  $("startRecord").disabled = !stream;
+  $("openCamera").disabled = false;
+  setStatus("Gravação encerrada");
+});
+
+$("downloadVideo").addEventListener("click", () => {
+  if (!lastVideoUrl) return;
+  const a = document.createElement("a");
+  a.href = lastVideoUrl;
+  a.download = "lanceo-gravacao-" + Date.now() + ".webm";
+  a.click();
+});
+
+$("takePhoto").addEventListener("click", () => {
+  if (!stream || !video.videoWidth) return;
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0);
+  canvas.toBlob(blob => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "lanceo-foto-" + Date.now() + ".png";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }, "image/png");
+});
+
+document.querySelectorAll("[data-event]").forEach(button => {
+  button.addEventListener("click", () => {
+    const entry = {
+      type: button.dataset.event,
+      time: elapsed(),
+      clock: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+      myTeam: $("myTeam").value.trim() || "Meu time",
+      opponent: $("opponent").value.trim() || "Adversário",
+      sport: $("sport").value,
+      category: $("category").value.trim() || "Sem categoria"
+    };
+    events.unshift(entry);
+    renderEvents();
+  });
+});
+
+function renderEvents() {
+  const list = $("eventList");
+  if (!events.length) {
+    list.innerHTML = '<div class="empty">Seus lances marcados vão aparecer aqui.</div>';
+    return;
+  }
+  list.innerHTML = "";
+  events.forEach((entry, index) => {
+    const row = document.createElement("div");
+    row.className = "event";
+    const info = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = entry.type + " · " + entry.time;
+    const detail = document.createElement("small");
+    detail.textContent = entry.clock + " · " + entry.myTeam + " x " + entry.opponent + " · " + entry.sport;
+    info.append(title, detail);
+    const remove = document.createElement("button");
+    remove.textContent = "Remover";
+    remove.addEventListener("click", () => { events.splice(index, 1); renderEvents(); });
+    row.append(info, remove);
+    list.append(row);
+  });
+}
+$("clearEvents").addEventListener("click", () => {
+  if (confirm("Quer limpar todos os lances desta sessão?")) {
+    events = [];
+    renderEvents();
+  }
+});
+$("exportEvents").addEventListener("click", () => {
+  if (!events.length) {
+    alert("Marque pelo menos um lance antes de exportar.");
+    return;
+  }
+  const columns = ["type", "time", "clock", "myTeam", "opponent", "sport", "category"];
+  const rows = [columns, ...events.map(e => columns.map(c => e[c]))];
+  const csv = rows.map(row => row.map(value => '"' + String(value).replace(/"/g, '""') + '"').join(";")).join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "lanceo-lances.csv";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+});
+window.addEventListener("beforeunload", () => {
+  if (stream) stream.getTracks().forEach(track => track.stop());
+  if (lastVideoUrl) URL.revokeObjectURL(lastVideoUrl);
+});
+</script>
+</body>
+</html>
